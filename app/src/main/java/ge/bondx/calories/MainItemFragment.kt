@@ -31,6 +31,7 @@ class MainItemFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         val database = FirebaseDatabase.getInstance()
         database.setPersistenceEnabled(true)
         val ref = database.getReference("Products")
