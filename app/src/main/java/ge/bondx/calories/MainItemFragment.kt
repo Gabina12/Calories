@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import android.util.Log
+import android.widget.Toast
 import com.google.firebase.database.*
 import ge.bondx.calories.Objects.Product
 
@@ -19,6 +20,7 @@ class MainItemFragment : Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var list: MutableList<Product>? = mutableListOf<Product>()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
+    private var listView: RecyclerView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ class MainItemFragment : Fragment() {
         // Set the adapter
         if (view is RecyclerView) {
             val context = view.getContext()
+            listView = view
             view.layoutManager = LinearLayoutManager(context) as RecyclerView.LayoutManager?
             adapter = MyMainItemRecyclerViewAdapter(this!!.list!!, mListener)
             view.adapter = adapter

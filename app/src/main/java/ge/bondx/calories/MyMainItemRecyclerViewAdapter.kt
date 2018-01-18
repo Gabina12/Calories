@@ -2,9 +2,11 @@ package ge.bondx.calories
 
 import android.opengl.Visibility
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -34,14 +36,13 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
         }
         prevCategory = holder.mItem!!.category
 
-
-
         holder.txtCalory.text = mValues[position].calory.toString()
         holder.txtContent.text = mValues[position].name
 
         holder.mView.setOnClickListener {
             mListener?.onListFragmentInteraction(holder.mItem!!)
-
+            holder.mCheckBox.isChecked = !holder.mCheckBox.isChecked
+            Log.wtf("LASHA",holder.mItem!!.name)
         }
     }
 
@@ -55,12 +56,14 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
         val mSeparator: TextView
         val mSepHeader: LinearLayout
         var mItem: Product? = null
+        var mCheckBox: CheckBox
 
         init {
             txtContent = mView.findViewById<View>(R.id.txtContent) as TextView
             txtCalory = mView.findViewById<View>(R.id.txtCalory) as TextView
             mSeparator = mView.findViewById<View>(R.id.separator) as TextView
             mSepHeader = mView.findViewById<View>(R.id.separatorHeader) as LinearLayout
+            mCheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
         }
 
         override fun toString(): String {
