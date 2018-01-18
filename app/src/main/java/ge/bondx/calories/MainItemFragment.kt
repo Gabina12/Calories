@@ -50,12 +50,10 @@ class MainItemFragment : Fragment() {
 
     var itemListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
-            // Get Post object and use the values to update the UI
             addDataToList(dataSnapshot)
         }
 
         override fun onCancelled(databaseError: DatabaseError) {
-            // Getting Item failed, log a message
             Log.w("MainActivity", "loadItem:onCancelled", databaseError.toException())
         }
     }
@@ -79,9 +77,7 @@ class MainItemFragment : Fragment() {
         super.onAttach(context)
         if (context is OnListFragmentInteractionListener) {
             mListener = context
-        } /*else {
-            throw RuntimeException(context!!.toString() + " must implement OnListFragmentInteractionListener")
-        }*/
+        }
     }
 
     override fun onDetach() {

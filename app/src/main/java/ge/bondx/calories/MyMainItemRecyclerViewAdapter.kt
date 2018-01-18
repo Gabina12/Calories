@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 
 import ge.bondx.calories.MainItemFragment.OnListFragmentInteractionListener
 import ge.bondx.calories.Objects.Product
@@ -40,6 +41,7 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
 
         holder.mView.setOnClickListener {
             mListener?.onListFragmentInteraction(holder.mItem!!)
+
         }
     }
 

@@ -31,8 +31,7 @@
         android:orientation="horizontal"
         android:visibility="visible">
 
-        <android.support.constraint.ConstraintLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
@@ -40,29 +39,36 @@
 
             <TextView
                 android:id="@+id/txtContent"
-                android:layout_width="329dp"
+                android:layout_width="319dp"
                 android:layout_height="27dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:text="TextView"
                 android:textSize="18sp"
-                tools:layout_editor_absoluteX="7dp"
+                app:layout_constraintEnd_toStartOf="@+id/checkBox"
+                app:layout_constraintStart_toStartOf="parent"
                 tools:layout_editor_absoluteY="14dp" />
 
             <TextView
                 android:id="@+id/txtCalory"
-                android:layout_width="329dp"
+                android:layout_width="317dp"
                 android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginStart="8dp"
                 android:text="TextView"
                 android:textSize="12sp"
-                app:layout_constraintTop_toBottomOf="@+id/txtContent"
-                tools:layout_editor_absoluteX="7dp" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.156"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtContent" />
 
             <CheckBox
                 android:id="@+id/checkBox"
-                android:layout_width="31dp"
+                android:layout_width="26dp"
                 android:layout_height="26dp"
-                android:layout_marginStart="12dp"
-                app:layout_constraintStart_toEndOf="@+id/txtContent"
-                tools:layout_editor_absoluteY="17dp" />
+                android:layout_marginEnd="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:layout_editor_absoluteY="22dp" />
         </android.support.constraint.ConstraintLayout>
 
     </LinearLayout>
