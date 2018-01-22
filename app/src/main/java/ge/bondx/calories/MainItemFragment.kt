@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import android.util.Log
+import android.widget.AdapterView
 import android.widget.Toast
 import com.google.firebase.database.*
 import ge.bondx.calories.Objects.Product
@@ -21,6 +22,7 @@ class MainItemFragment : Fragment() {
     private var list: MutableList<Product>? = mutableListOf<Product>()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
     private var listView: RecyclerView? = null
+    private var selectedList: MutableList<Product>? = mutableListOf<Product>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,25 +35,25 @@ class MainItemFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true)
         val database = FirebaseDatabase.getInstance()
-        database.setPersistenceEnabled(true)
+        //database.setPersistenceEnabled(true)
         val ref = database.getReference("Products")
-        ref.keepSynced(true)
+        //ref.keepSynced(true)
         ref.orderByKey().addListenerForSingleValueEvent(itemListener)
 
         // Set the adapter
         if (view is RecyclerView) {
             val context = view.getContext()
             listView = view
-            view.layoutManager = LinearLayoutManager(context) as RecyclerView.LayoutManager?
+            view.layoutManager = LinearLayoutManager(context)
             adapter = MyMainItemRecyclerViewAdapter(this!!.list!!, mListener)
             view.adapter = adapter
         }
         return view
     }
 
-    var itemListener: ValueEventListener = object : ValueEventListener {
+    private var itemListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
             addDataToList(dataSnapshot)
         }
@@ -63,16 +65,23 @@ class MainItemFragment : Fragment() {
 
     private fun addDataToList(dataSnapshot: DataSnapshot) {
 
-        for (item : DataSnapshot in dataSnapshot.children) {
+        for (item : DataSnapshot in dataSnapshot.children.sortedWith(compareBy({it.child("Category ").value.toString()})).toList()) {
             var prod = Product.create()
             prod.name = item.child("Name").value as String?
-            prod.calory = item.child("Calory").value as Number?
-            prod.category = item.child("Category").value as String?
+            prod.calory = item.child("Calorie").value as Number?
+            prod.category = item.child("Category ").value as String?
+            if( prod.category == null) {
+                Log.wtf("lasha","asdasdasd")
+            }
             list!!.add(prod)
         }
 
         adapter!!.notifyDataSetChanged()
 
+    }
+
+    interface OnListFragmentInteractionListener {
+        fun onListFragmentInteraction(item: Product);
     }
 
 
@@ -88,10 +97,6 @@ class MainItemFragment : Fragment() {
         mListener = null
     }
 
-    interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: Product)
-    }
-
     companion object {
 
         private val ARG_COLUMN_COUNT = "column-count"
@@ -105,8 +110,6 @@ class MainItemFragment : Fragment() {
         }
     }
 }
-
-
 
 
 

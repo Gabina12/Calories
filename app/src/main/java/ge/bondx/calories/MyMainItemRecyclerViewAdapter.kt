@@ -1,6 +1,5 @@
 package ge.bondx.calories
 
-import android.opengl.Visibility
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 
 import ge.bondx.calories.MainItemFragment.OnListFragmentInteractionListener
 import ge.bondx.calories.Objects.Product
@@ -28,21 +26,20 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.mItem = mValues[position]
 
-        if(prevCategory != mValues[position].category){
+        if(prevCategory == null || (prevCategory != null && prevCategory!!.trim() != mValues[position].category!!.trim())){
             holder.mSepHeader.visibility = View.VISIBLE
-            holder.mSeparator.text = mValues[position].category
+            holder.mSeparator.text = mValues[position].category!!.trim()
         }else{
             holder.mSepHeader.visibility = View.GONE
         }
-        prevCategory = holder.mItem!!.category
 
+        prevCategory = holder.mItem!!.category!!.trim()
         holder.txtCalory.text = mValues[position].calory.toString()
         holder.txtContent.text = mValues[position].name
 
         holder.mView.setOnClickListener {
             mListener?.onListFragmentInteraction(holder.mItem!!)
             holder.mCheckBox.isChecked = !holder.mCheckBox.isChecked
-            Log.wtf("LASHA",holder.mItem!!.name)
         }
     }
 
@@ -50,7 +47,11 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
         return mValues.size
     }
 
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView), View.OnClickListener {
+        override fun onClick(p0: View?) {
+            mCheckBox.isChecked = !mCheckBox.isChecked
+        }
+
         val txtContent: TextView
         val txtCalory: TextView
         val mSeparator: TextView
@@ -64,6 +65,9 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
             mSeparator = mView.findViewById<View>(R.id.separator) as TextView
             mSepHeader = mView.findViewById<View>(R.id.separatorHeader) as LinearLayout
             mCheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
+
+            txtContent.setOnClickListener(this)
+            txtCalory.setOnClickListener (this)
         }
 
         override fun toString(): String {
@@ -71,3 +75,4 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>, private 
         }
     }
 }
+
