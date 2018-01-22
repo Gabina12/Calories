@@ -13,6 +13,7 @@ import android.util.Log
 import android.widget.AdapterView
 import android.widget.Toast
 import com.google.firebase.database.*
+import ge.bondx.calories.Objects.ListItem
 import ge.bondx.calories.Objects.Product
 
 class MainItemFragment : Fragment() {
@@ -65,14 +66,23 @@ class MainItemFragment : Fragment() {
 
     private fun addDataToList(dataSnapshot: DataSnapshot) {
 
+        var prevCategory: String? = ""
+
         for (item : DataSnapshot in dataSnapshot.children.sortedWith(compareBy({it.child("Category ").value.toString()})).toList()) {
             var prod = Product.create()
+
+            if(prevCategory!!.trim() != (item.child("Category ").value as String?)!!.trim()){
+                prevCategory = (item.child("Category ").value as String?)!!.trim()
+                var pheader = Product.create()
+                pheader.name = prevCategory
+                pheader.isHeader = true
+                list!!.add(pheader)
+            }
+
             prod.name = item.child("Name").value as String?
             prod.calory = item.child("Calorie").value as Number?
             prod.category = item.child("Category ").value as String?
-            if( prod.category == null) {
-                Log.wtf("lasha","asdasdasd")
-            }
+
             list!!.add(prod)
         }
 

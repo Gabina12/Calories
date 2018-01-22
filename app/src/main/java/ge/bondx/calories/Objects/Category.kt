@@ -3,7 +3,7 @@ package ge.bondx.calories.Objects
 /**
  * Created by Lasha.Gabinashvili on 1/17/2018.
  */
-class Category {
+class ListItem {
     var name: String
     var products: List<Product>
 

@@ -12,5 +12,6 @@ class Product {
     var name: String? = null
     var calory: Number? = null
     var category: String? = null
+    var isHeader: Boolean = false
 
 }
