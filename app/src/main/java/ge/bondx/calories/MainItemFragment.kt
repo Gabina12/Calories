@@ -10,24 +10,21 @@ import android.view.View
 import android.view.ViewGroup
 
 import android.util.Log
-import android.widget.AdapterView
 import android.widget.Toast
 import com.google.firebase.database.*
 import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
-import ge.bondx.calories.Objects.ListItem
 import ge.bondx.calories.Objects.Product
-import android.widget.AdapterView.OnItemClickListener
-
+import com.google.firebase.database.FirebaseDatabase
+import ge.bondx.calories.database.DatabaseUtil
 
 
 class MainItemFragment : Fragment() {
-    // TODO: Customize parameters
+
     private var mColumnCount = 1
     private var mListener: OnListFragmentInteractionListener? = null
-    private var list: MutableList<Product>? = mutableListOf<Product>()
+    private var list: MutableList<Product>? = mutableListOf()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
-    private var listView: RecyclerView? = null
-    private var selectedList: MutableList<Product>? = mutableListOf<Product>()
+    private var selectedList: MutableList<Product>? = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,27 +37,21 @@ class MainItemFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
-        //FirebaseDatabase.getInstance().setPersistenceEnabled(true)
-        val database = FirebaseDatabase.getInstance()
-        //database.setPersistenceEnabled(true)
-        val ref = database.getReference("Products")
-        //ref.keepSynced(true)
+        val ref = DatabaseUtil().database.getReference("Products")
+        ref.keepSynced(true)
         ref.orderByKey().addListenerForSingleValueEvent(itemListener)
 
         // Set the adapter
         if (view is RecyclerView) {
             val context = view.getContext()
-            listView = view
             view.layoutManager = LinearLayoutManager(context)
-
-            /*adapter = MyMainItemRecyclerViewAdapter(
-                    this!!.list!!,
-                    mListener = mListener.onListFragmentInteraction(item: Product)
-            )*/
 
             adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
                 override fun onListFragmentInteraction(item: Product) {
-                    Toast.makeText(getContext(), "Item Clicked" + item.isChecked.toString(), Toast.LENGTH_LONG).show()
+                    if(item.isChecked) selectedList!!.add(item)
+                    else selectedList!!.remove(item)
+
+                    Toast.makeText(getContext(), "Item Clicked - " + item.isChecked.toString() + " total: " + selectedList!!.size, Toast.LENGTH_SHORT).show()
                 }
             })
             view.adapter = adapter
