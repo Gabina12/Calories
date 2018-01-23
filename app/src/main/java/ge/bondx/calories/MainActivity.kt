@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_notifications -> {
-                selectedFragment = NotificationsFragment.newInstance("","")
+                selectedFragment = NotificationsFragment.newInstance()
                 supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
                 return@OnNavigationItemSelectedListener true
             }
