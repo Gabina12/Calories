@@ -7,13 +7,16 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import ge.bondx.calories.database.MyDBHandler
 
-import com.google.android.gms.plus.PlusOneButton
+import ge.bondx.calories.objects.Product
 
 
 class NotificationsFragment : Fragment() {
 
     private var mListener: OnFragmentInteractionListener? = null
+    private var list: MutableList<Product>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +30,10 @@ class NotificationsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater!!.inflate(R.layout.fragment_notifications, container, false)
+        val dbHandler = MyDBHandler(context)
+        list = dbHandler.getProducts() as MutableList<Product>?
+
+        Toast.makeText(this.context,list!!.size.toString(),Toast.LENGTH_SHORT).show()
 
         return view
     }
@@ -39,6 +46,10 @@ class NotificationsFragment : Fragment() {
         if (mListener != null) {
             mListener!!.onFragmentInteraction(uri)
         }
+    }
+
+    fun addList(data: List<Product>?){
+        //list = data
     }
 
     override fun onAttach(context: Context?) {
@@ -71,3 +82,4 @@ class NotificationsFragment : Fragment() {
     }
 
 }
+

@@ -13,9 +13,9 @@ import android.util.Log
 import android.widget.Toast
 import com.google.firebase.database.*
 import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
-import ge.bondx.calories.Objects.Product
-import com.google.firebase.database.FirebaseDatabase
+import ge.bondx.calories.objects.Product
 import ge.bondx.calories.database.DatabaseUtil
+import ge.bondx.calories.database.MyDBHandler
 
 
 class MainItemFragment : Fragment() {
@@ -48,8 +48,16 @@ class MainItemFragment : Fragment() {
 
             adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
                 override fun onListFragmentInteraction(item: Product) {
-                    if(item.isChecked) selectedList!!.add(item)
-                    else selectedList!!.remove(item)
+                    val dbHandler = MyDBHandler(context)
+                    if(item.isChecked) {
+                        selectedList!!.add(item)
+                        dbHandler.addProduct(item)
+                    }
+                    else {
+                        selectedList!!.remove(item)
+                        dbHandler.deleteProduct(item.key!!)
+                    }
+
 
                     Toast.makeText(getContext(), "Item Clicked - " + item.isChecked.toString() + " total: " + selectedList!!.size, Toast.LENGTH_SHORT).show()
                 }
@@ -74,6 +82,8 @@ class MainItemFragment : Fragment() {
     private fun addDataToList(dataSnapshot: DataSnapshot) {
 
         var prevCategory: String? = ""
+        val dbHandler = MyDBHandler(context)
+        var selected: List<Product> = dbHandler.getProducts()!!
 
         for (item : DataSnapshot in dataSnapshot.children.sortedWith(compareBy({it.child("Category ").value.toString()})).toList()) {
             var prod = Product.create()
@@ -90,6 +100,10 @@ class MainItemFragment : Fragment() {
             prod.calory = item.child("Calorie").value as Number?
             prod.category = item.child("Category ").value as String?
             prod.key = item.key
+
+            if(selected.any{it.key == prod.key}){
+                prod.isChecked = true
+            }
 
             list!!.add(prod)
         }

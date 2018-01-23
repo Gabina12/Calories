@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 
-import ge.bondx.calories.Objects.Product
+import ge.bondx.calories.objects.Product
 
 
 

@@ -1,4 +1,4 @@
-package ge.bondx.calories.Objects
+package ge.bondx.calories.objects
 
 /**
  * Created by Lasha.Gabinashvili on 1/17/2018.

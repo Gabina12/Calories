@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import com.google.firebase.database.FirebaseDatabase
+import ge.bondx.calories.database.MyDBHandler
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.navigation_notifications -> {
                 selectedFragment = NotificationsFragment.newInstance()
+                selectedFragment.addList(null)
                 supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
                 return@OnNavigationItemSelectedListener true
             }
@@ -33,6 +35,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
+
+        val dbHandler = MyDBHandler(this)
+
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         navigation.selectedItemId = R.id.navigation_home
