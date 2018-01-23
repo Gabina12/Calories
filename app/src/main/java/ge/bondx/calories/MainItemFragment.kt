@@ -13,8 +13,12 @@ import android.util.Log
 import android.widget.AdapterView
 import android.widget.Toast
 import com.google.firebase.database.*
+import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
 import ge.bondx.calories.Objects.ListItem
 import ge.bondx.calories.Objects.Product
+import android.widget.AdapterView.OnItemClickListener
+
+
 
 class MainItemFragment : Fragment() {
     // TODO: Customize parameters
@@ -48,11 +52,23 @@ class MainItemFragment : Fragment() {
             val context = view.getContext()
             listView = view
             view.layoutManager = LinearLayoutManager(context)
-            adapter = MyMainItemRecyclerViewAdapter(this!!.list!!, mListener)
+
+            /*adapter = MyMainItemRecyclerViewAdapter(
+                    this!!.list!!,
+                    mListener = mListener.onListFragmentInteraction(item: Product)
+            )*/
+
+            adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+                override fun onListFragmentInteraction(item: Product) {
+                    Toast.makeText(getContext(), "Item Clicked" + item.isChecked.toString(), Toast.LENGTH_LONG).show()
+                }
+            })
             view.adapter = adapter
         }
         return view
     }
+
+
 
     private var itemListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -82,16 +98,13 @@ class MainItemFragment : Fragment() {
             prod.name = item.child("Name").value as String?
             prod.calory = item.child("Calorie").value as Number?
             prod.category = item.child("Category ").value as String?
+            prod.key = item.key
 
             list!!.add(prod)
         }
 
         adapter!!.notifyDataSetChanged()
 
-    }
-
-    interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: Product);
     }
 
 
