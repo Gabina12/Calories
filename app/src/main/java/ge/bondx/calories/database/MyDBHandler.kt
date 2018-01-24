@@ -96,6 +96,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         val cursor = db.rawQuery(query, null)
 
         var products: MutableList<Product> = mutableListOf()
+        var prevCategory: String? = ""
 
         while (cursor.moveToNext()){
 
@@ -110,6 +111,16 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
             product.name = name
             product.category = category
             product.calory = calory
+
+
+            if(prevCategory!!.trim() != product.category!!.trim()){
+                prevCategory = product.category!!.trim()
+                var pheader = Product.create()
+                pheader.name = prevCategory
+                pheader.isHeader = true
+                pheader.calory = 0
+                products!!.add(pheader)
+            }
 
             products.add(product)
         }

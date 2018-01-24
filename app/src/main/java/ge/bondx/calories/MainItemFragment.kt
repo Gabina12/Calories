@@ -24,7 +24,6 @@ class MainItemFragment : Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var list: MutableList<Product>? = mutableListOf()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
-    private var selectedList: MutableList<Product>? = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,16 +49,11 @@ class MainItemFragment : Fragment() {
                 override fun onListFragmentInteraction(item: Product) {
                     val dbHandler = MyDBHandler(context)
                     if(item.isChecked) {
-                        selectedList!!.add(item)
                         dbHandler.addProduct(item)
                     }
                     else {
-                        selectedList!!.remove(item)
                         dbHandler.deleteProduct(item.key!!)
                     }
-
-
-                    Toast.makeText(getContext(), "Item Clicked - " + item.isChecked.toString() + " total: " + selectedList!!.size, Toast.LENGTH_SHORT).show()
                 }
             })
             view.adapter = adapter

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import ge.bondx.calories.database.MyDBHandler
 
@@ -20,6 +21,7 @@ class NotificationsFragment : Fragment() {
     private var list: List<Product>? = null
     private lateinit var listView: RecyclerView
     private lateinit var adapter : MyMainItemRecyclerViewAdapter
+    private lateinit var itemTotal: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +36,7 @@ class NotificationsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater!!.inflate(R.layout.fragment_notifications, container, false)
         listView = view.findViewById<View>(R.id.notificationList) as RecyclerView
+        itemTotal = view.findViewById<View>(R.id.txtTotal) as TextView
 
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts()
@@ -43,6 +46,9 @@ class NotificationsFragment : Fragment() {
 
             }
         })
+
+        var total:Double = list!!.sumByDouble { it.calory!!.toDouble() }
+        itemTotal.text = total.toString()
 
         listView.adapter = adapter
 
@@ -97,4 +103,5 @@ class NotificationsFragment : Fragment() {
     }
 
 }
+
 
