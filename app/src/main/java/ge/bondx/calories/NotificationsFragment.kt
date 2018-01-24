@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +17,9 @@ import ge.bondx.calories.objects.Product
 class NotificationsFragment : Fragment() {
 
     private var mListener: OnFragmentInteractionListener? = null
-    private var list: MutableList<Product>? = null
+    private var list: List<Product>? = null
+    private lateinit var listView: RecyclerView
+    private lateinit var adapter : MyMainItemRecyclerViewAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,8 +33,20 @@ class NotificationsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         val view = inflater!!.inflate(R.layout.fragment_notifications, container, false)
+        listView = view.findViewById<View>(R.id.notificationList) as RecyclerView
+
         val dbHandler = MyDBHandler(context)
-        list = dbHandler.getProducts() as MutableList<Product>?
+        list = dbHandler.getProducts()
+
+        adapter = MyMainItemRecyclerViewAdapter(list!! ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+            override fun onListFragmentInteraction(item: Product) {
+
+            }
+        })
+
+        listView.adapter = adapter
+
+        adapter.notifyDataSetChanged()
 
         Toast.makeText(this.context,list!!.size.toString(),Toast.LENGTH_SHORT).show()
 
