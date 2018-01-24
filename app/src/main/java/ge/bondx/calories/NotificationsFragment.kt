@@ -46,6 +46,13 @@ class NotificationsFragment : Fragment() {
                 if(!item.isChecked) {
                     dbHandler.deleteProduct(item.key!!)
                     list.remove(item)
+
+                    if(list!= null && !list.any { it.category == item.category && !it.isHeader }){
+                        val header = list.firstOrNull{it.category == item.category}
+                        if(header != null)
+                            list.remove(header)
+                    }
+
                     adapter.notifyDataSetChanged()
                 }
             }

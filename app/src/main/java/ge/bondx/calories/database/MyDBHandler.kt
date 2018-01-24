@@ -118,6 +118,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
                 prevCategory = product.category!!.trim()
                 var pheader = Product.create()
                 pheader.name = prevCategory
+                pheader.category = prevCategory
                 pheader.isHeader = true
                 pheader.calory = 0
                 products!!.add(pheader)
