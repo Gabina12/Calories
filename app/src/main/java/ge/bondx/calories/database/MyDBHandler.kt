@@ -86,7 +86,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
 
     fun getProducts(): List<Product>? {
         val query =
-                "SELECT * FROM $TABLE_PRODUCTS"
+                "SELECT * FROM $TABLE_PRODUCTS Order by $COLUMN_CATEGORY"
 
         val db = this.writableDatabase
 
@@ -111,6 +111,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
             product.name = name
             product.category = category
             product.calory = calory
+            product.isChecked = true
 
 
             if(prevCategory!!.trim() != product.category!!.trim()){

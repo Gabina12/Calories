@@ -18,7 +18,7 @@ import ge.bondx.calories.objects.Product
 class NotificationsFragment : Fragment() {
 
     private var mListener: OnFragmentInteractionListener? = null
-    private var list: List<Product>? = null
+    private var list: MutableList<Product> = mutableListOf()
     private lateinit var listView: RecyclerView
     private lateinit var adapter : MyMainItemRecyclerViewAdapter
     private lateinit var itemTotal: TextView
@@ -39,11 +39,15 @@ class NotificationsFragment : Fragment() {
         itemTotal = view.findViewById<View>(R.id.txtTotal) as TextView
 
         val dbHandler = MyDBHandler(context)
-        list = dbHandler.getProducts()
+        list = dbHandler.getProducts() as MutableList<Product>
 
         adapter = MyMainItemRecyclerViewAdapter(list!! ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
-
+                if(!item.isChecked) {
+                    dbHandler.deleteProduct(item.key!!)
+                    list.remove(item)
+                    adapter.notifyDataSetChanged()
+                }
             }
         })
 

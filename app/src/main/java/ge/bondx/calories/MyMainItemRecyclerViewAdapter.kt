@@ -68,6 +68,8 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>,
             txtContent = mView.findViewById<View>(R.id.txtContent) as TextView
             txtCalory = mView.findViewById<View>(R.id.txtCalory) as TextView
             mCheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
+
+
         }
 
         fun bind(item: Product, listener: OnListFragmentInteractionListener) {
@@ -76,6 +78,7 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>,
 
             mCheckBox.tag = item.key
             mCheckBox.isChecked = item.isChecked
+
             mView.setOnClickListener {
                 item!!.isChecked = !mCheckBox!!.isChecked
                 mCheckBox.isChecked = item!!.isChecked
