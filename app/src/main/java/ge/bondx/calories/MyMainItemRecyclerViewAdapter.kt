@@ -73,7 +73,7 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>,
         }
 
         fun bind(item: Product, listener: OnListFragmentInteractionListener) {
-            txtCalory!!.text = item.calory.toString()
+            txtCalory!!.text = "კალორია - " + item.calory.toString()
             txtContent!!.text = item.name
 
             mCheckBox.tag = item.key
