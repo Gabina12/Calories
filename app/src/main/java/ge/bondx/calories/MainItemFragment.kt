@@ -5,11 +5,14 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 import android.util.Log
+import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.database.*
 import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
@@ -24,6 +27,8 @@ class MainItemFragment : Fragment() {
     private var mListener: OnListFragmentInteractionListener? = null
     private var list: MutableList<Product>? = mutableListOf()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
+    private lateinit var recyclerView: RecyclerView
+    internal var editTextversion: EditText?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,32 +41,58 @@ class MainItemFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
-        val ref = DatabaseUtil().database.getReference("Products")
+        //val ref = DatabaseUtil().database.getReference("Products")
+        val ref = FirebaseDatabase.getInstance().getReference("Products")
         ref.keepSynced(true)
         ref.orderByKey().addListenerForSingleValueEvent(itemListener)
 
-        // Set the adapter
-        if (view is RecyclerView) {
-            val context = view.getContext()
-            view.layoutManager = LinearLayoutManager(context)
+        val context = view.getContext()
+        recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
+        editTextversion = view.findViewById<View>(R.id.editTextversion) as EditText
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
-            adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
-                override fun onListFragmentInteraction(item: Product) {
-                    val dbHandler = MyDBHandler(context)
-                    if(item.isChecked) {
-                        dbHandler.addProduct(item)
-                    }
-                    else {
-                        dbHandler.deleteProduct(item.key!!)
-                    }
+        adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+            override fun onListFragmentInteraction(item: Product) {
+                val dbHandler = MyDBHandler(context)
+                if(item.isChecked) {
+                    dbHandler.addProduct(item)
                 }
-            })
-            view.adapter = adapter
-        }
+                else {
+                    dbHandler.deleteProduct(item.key!!)
+                }
+            }
+        })
+
+        editTextversion?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+
+            }
+
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+
+            }
+
+            override fun afterTextChanged(editable: Editable) {
+                //after the change calling the method and passing the search input
+                filter(editable.toString())
+            }
+        })
+
+        recyclerView.adapter = adapter
+
         return view
     }
 
+    private fun filter(text: String) {
+        val filterdNames = ArrayList<Product>()
 
+        for (s in list!!) {
+            if (s.name!!.toLowerCase().contains(text.toLowerCase())) {
+                filterdNames.add(s)
+            }
+        }
+        adapter?.filterList(filterdNames)
+    }
 
     private var itemListener: ValueEventListener = object : ValueEventListener {
         override fun onDataChange(dataSnapshot: DataSnapshot) {

@@ -53,6 +53,9 @@ class NotificationsFragment : Fragment() {
                             list.remove(header)
                     }
 
+                    var total:Double = list!!.sumByDouble { it.calory!!.toDouble() }
+                    itemTotal.text = total.toString()
+
                     adapter.notifyDataSetChanged()
                 }
             }

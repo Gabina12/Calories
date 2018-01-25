@@ -12,7 +12,7 @@ import ge.bondx.calories.objects.Product
 
 
 
-class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>,
+class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
                                     private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -52,6 +52,11 @@ class MyMainItemRecyclerViewAdapter(private val mValues: List<Product>,
             item.bind(mValues[position], mListener!!)
         }
 
+    }
+
+    fun filterList(filterdNames: ArrayList<Product>) {
+        this.mValues = filterdNames
+        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
