@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true)
 
-        val dbHandler = MyDBHandler(this)
+        //val dbHandler = MyDBHandler(this)
 
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
