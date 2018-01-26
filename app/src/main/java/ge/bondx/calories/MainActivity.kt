@@ -53,29 +53,6 @@ class MainActivity : AppCompatActivity() {
 
         searchView = findViewById<View>(R.id.search_view) as MaterialSearchView
 
-        searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
-            override fun onSearchViewShown() {
-
-            }
-
-            override fun onSearchViewClosed() {
-
-            }
-        })
-
-        searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
-
-        })
-        //val dbHandler = MyDBHandler(this)
-
-
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
         navigation.selectedItemId = R.id.navigation_home
     }

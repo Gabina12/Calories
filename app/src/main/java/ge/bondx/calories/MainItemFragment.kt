@@ -15,6 +15,7 @@ import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
 import com.google.firebase.database.*
+import com.miguelcatalan.materialsearchview.MaterialSearchView
 import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
 import ge.bondx.calories.objects.Product
 import ge.bondx.calories.database.DatabaseUtil
@@ -29,6 +30,7 @@ class MainItemFragment : Fragment() {
     private var adapter: MyMainItemRecyclerViewAdapter? = null
     private lateinit var recyclerView: RecyclerView
     internal var editTextversion: EditText?=null
+    internal lateinit var searchView: MaterialSearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,29 @@ class MainItemFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
+        searchView = activity.findViewById<View>(R.id.search_view) as MaterialSearchView
+        searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
+            override fun onSearchViewShown() {
+
+            }
+
+            override fun onSearchViewClosed() {
+
+            }
+        })
+
+        searchView.setOnQueryTextListener(object : MaterialSearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filter(newText!!)
+                return true
+            }
+
+        })
+
         //val ref = DatabaseUtil().database.getReference("Products")
         val ref = FirebaseDatabase.getInstance().getReference("Products")
         ref.keepSynced(true)
@@ -48,8 +73,8 @@ class MainItemFragment : Fragment() {
 
         val context = view.getContext()
         recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
-        editTextversion = view.findViewById<View>(R.id.editTextversion) as EditText
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        //editTextversion = view.findViewById<View>(R.id.editTextversion) as EditText
+        recyclerView.layoutManager = LinearLayoutManager(context) as RecyclerView.LayoutManager?
 
         adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
@@ -63,7 +88,7 @@ class MainItemFragment : Fragment() {
             }
         })
 
-        editTextversion?.addTextChangedListener(object : TextWatcher {
+        /*editTextversion?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
             }
@@ -76,7 +101,7 @@ class MainItemFragment : Fragment() {
                 //after the change calling the method and passing the search input
                 filter(editable.toString())
             }
-        })
+        })*/
 
         recyclerView.adapter = adapter
 
