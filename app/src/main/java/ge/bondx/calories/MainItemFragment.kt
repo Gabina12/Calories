@@ -110,13 +110,13 @@ class MainItemFragment : Fragment() {
         val dbHandler = MyDBHandler(context)
         var selected: List<Product> = dbHandler.getProducts()!!
 
-        for (item: DataSnapshot in dataSnapshot.children.sortedWith(compareBy({ it.child("Category ").value.toString() })).toList()) {
+        for (item: DataSnapshot in dataSnapshot.children.sortedWith(compareBy({ it.child("Category").value.toString() })).toList()) {
 
             try {
                 var prod = Product.create()
 
-                if (prevCategory!!.trim() != (item.child("Category ").value as String?)!!.trim()) {
-                    prevCategory = (item.child("Category ").value as String?)!!.trim()
+                if (prevCategory!!.trim() != (item.child("Category").value as String?)!!.trim()) {
+                    prevCategory = (item.child("Category").value as String?)!!.trim()
                     var pheader = Product.create()
                     pheader.name = prevCategory
                     pheader.isHeader = true
@@ -125,7 +125,7 @@ class MainItemFragment : Fragment() {
 
                 prod.name = item.child("Name").value as String?
                 prod.calory = item.child("Calorie").value as Number?
-                prod.category = item.child("Category ").value as String?
+                prod.category = item.child("Category").value as String?
                 prod.key = item.key
 
                 if (selected.any { it.key == prod.key }) {
