@@ -66,15 +66,13 @@ class MainItemFragment : Fragment() {
 
         })
 
-        //val ref = DatabaseUtil().database.getReference("Products")
         val ref = FirebaseDatabase.getInstance().getReference("Products")
         ref.keepSynced(true)
         ref.orderByKey().addListenerForSingleValueEvent(itemListener)
 
         val context = view.getContext()
         recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
-        //editTextversion = view.findViewById<View>(R.id.editTextversion) as EditText
-        recyclerView.layoutManager = LinearLayoutManager(context) as RecyclerView.LayoutManager?
+        recyclerView.layoutManager = LinearLayoutManager(context)
 
         adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
@@ -88,21 +86,6 @@ class MainItemFragment : Fragment() {
             }
         })
 
-        /*editTextversion?.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-
-            }
-
-            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-
-            }
-
-            override fun afterTextChanged(editable: Editable) {
-                //after the change calling the method and passing the search input
-                filter(editable.toString())
-            }
-        })*/
-
         recyclerView.adapter = adapter
 
         return view
@@ -112,7 +95,8 @@ class MainItemFragment : Fragment() {
         val filterdNames = ArrayList<Product>()
 
         for (s in list!!) {
-            if (s.name!!.toLowerCase().contains(text.toLowerCase())) {
+            if (s.name!!.toLowerCase().contains(text.toLowerCase()) || s.category!!.toLowerCase().contains(text.toLowerCase())
+            || s.calory!!.toString().contains(text)) {
                 filterdNames.add(s)
             }
         }
@@ -144,6 +128,7 @@ class MainItemFragment : Fragment() {
                     prevCategory = (item.child("Category").value as String?)!!.trim()
                     var pheader = Product.create()
                     pheader.name = prevCategory
+                    pheader.category = prevCategory
                     pheader.isHeader = true
                     list!!.add(pheader)
                 }

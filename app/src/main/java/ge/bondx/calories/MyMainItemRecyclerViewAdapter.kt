@@ -20,17 +20,13 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
         fun onListFragmentInteraction(item: Product)
     }
 
-    private var prevCategory: String? = null
-    private var checkedItems: ArrayList<String?>? = null
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        var view:View? = null;
-        checkedItems = arrayListOf()
+        var view: View?
         return if (viewType == 1){
             view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.contact_section_header, parent, false)
             ViewHolderHeader(view)
-        }else{
+        } else{
             view = LayoutInflater.from(parent.context)
                     .inflate(R.layout.fragment_mainitem, parent, false)
 
@@ -43,15 +39,13 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-
         if(holder.itemViewType == 1){
             val header : ViewHolderHeader = holder as ViewHolderHeader
             header.mSeparator.text = mValues[position].name
-        }else{
+        } else{
             val item: ViewHolderItem = holder as ViewHolderItem
             item.bind(mValues[position], mListener!!)
         }
-
     }
 
     fun filterList(filterdNames: ArrayList<Product>) {
@@ -64,7 +58,6 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
     }
 
     class ViewHolderItem(val mView: View) : RecyclerView.ViewHolder(mView) {
-
         var txtContent: TextView
         var txtCalory: TextView
         var mCheckBox: CheckBox
@@ -73,8 +66,6 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
             txtContent = mView.findViewById<View>(R.id.txtContent) as TextView
             txtCalory = mView.findViewById<View>(R.id.txtCalory) as TextView
             mCheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
-
-
         }
 
         fun bind(item: Product, listener: OnListFragmentInteractionListener) {
@@ -89,7 +80,6 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
                 mCheckBox.isChecked = item!!.isChecked
                 listener.onListFragmentInteraction(item)
             }
-
         }
 
         override fun toString(): String {
@@ -98,11 +88,8 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
     }
 
     class ViewHolderHeader(val mView: View) : RecyclerView.ViewHolder(mView){
-        var mSeparator: TextView
+        var mSeparator: TextView = mView.findViewById<View>(R.id.separator) as TextView
 
-        init {
-             mSeparator = mView.findViewById<View>(R.id.separator) as TextView
-        }
     }
 }
 
