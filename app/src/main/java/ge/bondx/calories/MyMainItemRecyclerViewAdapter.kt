@@ -9,10 +9,7 @@ import android.widget.TextView
 
 import ge.bondx.calories.objects.Product
 
-
-
-
-class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
+class MyMainItemRecyclerViewAdapter(private var mValues: MutableList<Product>,
                                     private val mListener: OnListFragmentInteractionListener?)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -55,6 +52,66 @@ class MyMainItemRecyclerViewAdapter(private var mValues: List<Product>,
 
     override fun getItemCount(): Int {
         return mValues.size
+    }
+
+    fun animateTo(models: List<Product>) {
+        applyAndAnimateRemovals(models)
+        applyAndAnimateAdditions(models)
+        applyAndAnimateMovedItems(models)
+
+    }
+
+    private fun applyAndAnimateRemovals(newModels: List<Product>) {
+
+        for (i in mValues.size - 1 downTo 0) {
+            val model = mValues[i]
+            if (!newModels.contains(model)) {
+                removeItem(i)
+            }
+        }
+    }
+
+    private fun applyAndAnimateAdditions(newModels: List<Product>) {
+
+        var i = 0
+        val count = newModels.size
+        while (i < count) {
+            val model = newModels[i]
+            if (!mValues.contains(model)) {
+                addItem(i, model)
+            }
+            i++
+        }
+    }
+
+    private fun applyAndAnimateMovedItems(newModels: List<Product>) {
+
+        for (toPosition in newModels.indices.reversed()) {
+            val model = newModels[toPosition]
+            val fromPosition = mValues.indexOf(model)
+            if (fromPosition >= 0 && fromPosition != toPosition) {
+                moveItem(fromPosition, toPosition)
+            }
+        }
+    }
+
+    private fun removeItem(position: Int): Product {
+        val item = mValues[position]
+        mValues.remove(item)
+        notifyItemRemoved(position)
+        return item
+    }
+
+    private fun addItem(position: Int, model: Product) {
+        mValues.add(position, model)
+        notifyItemInserted(position)
+    }
+
+    private fun moveItem(fromPosition: Int, toPosition: Int) {
+        val item = mValues[fromPosition]
+        mValues.remove(item)
+        mValues.add(toPosition, item)
+        notifyItemMoved(fromPosition, toPosition)
     }
 
     class ViewHolderItem(val mView: View) : RecyclerView.ViewHolder(mView) {

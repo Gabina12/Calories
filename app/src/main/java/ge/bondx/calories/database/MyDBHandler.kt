@@ -65,14 +65,14 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         if (cursor.moveToFirst()) {
             cursor.moveToFirst()
 
-            val id = Integer.parseInt(cursor.getString(0))
+            //val id = Integer.parseInt(cursor.getString(0))
             val name = cursor.getString(1)
             val category = cursor.getString(2)
-            val key = cursor.getString(3)
+            val product_key = cursor.getString(3)
             val calory = cursor.getDouble(4)
 
             product = Product.create()
-            product.key = key
+            product.key = product_key
             product.name = name
             product.category = category
             product.calory = calory
@@ -100,7 +100,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
 
         while (cursor.moveToNext()){
 
-            val id = Integer.parseInt(cursor.getString(0))
+            //val id = Integer.parseInt(cursor.getString(0))
             val name = cursor.getString(1)
             val category = cursor.getString(2)
             val key = cursor.getString(3)
@@ -121,7 +121,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
                 pheader.category = prevCategory
                 pheader.isHeader = true
                 pheader.calory = 0
-                products!!.add(pheader)
+                products.add(pheader)
             }
 
             products.add(product)

@@ -41,19 +41,19 @@ class NotificationsFragment : Fragment() {
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
 
-        adapter = MyMainItemRecyclerViewAdapter(list!! ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+        adapter = MyMainItemRecyclerViewAdapter(list ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
                 if(!item.isChecked) {
                     dbHandler.deleteProduct(item.key!!)
                     list.remove(item)
 
-                    if(list!= null && !list.any { it.category == item.category && !it.isHeader }){
+                    if(!list.any { it.category == item.category && !it.isHeader }){
                         val header = list.firstOrNull{it.category == item.category}
                         if(header != null)
                             list.remove(header)
                     }
 
-                    var total:Double = list!!.sumByDouble { it.calory!!.toDouble() }
+                    var total:Double = list.sumByDouble { it.calory!!.toDouble() }
                     itemTotal.text = total.toString()
 
                     adapter.notifyDataSetChanged()
@@ -61,14 +61,14 @@ class NotificationsFragment : Fragment() {
             }
         })
 
-        var total:Double = list!!.sumByDouble { it.calory!!.toDouble() }
+        var total:Double = list.sumByDouble { it.calory!!.toDouble() }
         itemTotal.text = total.toString()
 
         listView.adapter = adapter
 
         adapter.notifyDataSetChanged()
 
-        Toast.makeText(this.context,list!!.size.toString(),Toast.LENGTH_SHORT).show()
+        Toast.makeText(this.context,list.size.toString(),Toast.LENGTH_SHORT).show()
 
         return view
     }
@@ -81,10 +81,6 @@ class NotificationsFragment : Fragment() {
         if (mListener != null) {
             mListener!!.onFragmentInteraction(uri)
         }
-    }
-
-    fun addList(data: List<Product>?){
-        //list = data
     }
 
     override fun onAttach(context: Context?) {

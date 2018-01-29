@@ -26,10 +26,10 @@ class MainItemFragment : Fragment() {
 
     private var mColumnCount = 1
     private var mListener: OnListFragmentInteractionListener? = null
-    private var list: MutableList<Product>? = mutableListOf()
+    private var list: MutableList<Product> = mutableListOf()
+    private var full_data: MutableList<Product> = mutableListOf()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
     private lateinit var recyclerView: RecyclerView
-    internal var editTextversion: EditText?=null
     internal lateinit var searchView: MaterialSearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,8 @@ class MainItemFragment : Fragment() {
             }
 
             override fun onSearchViewClosed() {
-
+                adapter!!.animateTo(full_data)
+                recyclerView.scrollToPosition(0)
             }
         })
 
@@ -60,7 +61,9 @@ class MainItemFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                filter(newText!!)
+                recyclerView.scrollToPosition(0)
+                val data = filter(newText!!)
+                adapter!!.animateTo(data)
                 return true
             }
 
@@ -70,7 +73,7 @@ class MainItemFragment : Fragment() {
         ref.keepSynced(true)
         ref.orderByKey().addListenerForSingleValueEvent(itemListener)
 
-        val context = view.getContext()
+        val context = view.context
         recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -91,16 +94,16 @@ class MainItemFragment : Fragment() {
         return view
     }
 
-    private fun filter(text: String) {
-        val filterdNames = ArrayList<Product>()
+    private fun filter(text: String) : MutableList<Product> {
+        val filteredProduct = ArrayList<Product>()
 
-        for (s in list!!) {
-            if (s.name!!.toLowerCase().contains(text.toLowerCase()) || s.category!!.toLowerCase().contains(text.toLowerCase())
-            || s.calory!!.toString().contains(text)) {
-                filterdNames.add(s)
-            }
+        if(text.isNullOrBlank()) return list
+
+        list.filterTo(filteredProduct) {
+            (it.name!!.toLowerCase().contains(text.toLowerCase()) || it.category!!.toLowerCase().contains(text.toLowerCase())
+                    || it.calory!!.toString().contains(text))
         }
-        adapter?.filterList(filterdNames)
+        return  filteredProduct
     }
 
     private var itemListener: ValueEventListener = object : ValueEventListener {
@@ -129,8 +132,10 @@ class MainItemFragment : Fragment() {
                     var pheader = Product.create()
                     pheader.name = prevCategory
                     pheader.category = prevCategory
+                    pheader.calory = -1
                     pheader.isHeader = true
-                    list!!.add(pheader)
+                    list.add(pheader)
+                    full_data.add(pheader)
                 }
 
                 prod.name = item.child("Name").value as String?
@@ -143,6 +148,7 @@ class MainItemFragment : Fragment() {
                 }
 
                 list!!.add(prod)
+                full_data.add(prod)
             } catch (ex: Throwable) {
                 Log.wtf("ERROR", ex)
             }
