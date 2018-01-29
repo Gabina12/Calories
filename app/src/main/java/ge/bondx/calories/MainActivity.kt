@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.isTranslucentNavigationEnabled = true
         bottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
         bottomNavigation.isColored = true
-        bottomNavigation.currentItem = 0
 
         bottomNavigation.setOnTabSelectedListener({ position, _ ->
             var selectedFragment: Fragment?
@@ -65,6 +64,8 @@ class MainActivity : AppCompatActivity() {
             }
             true
         })
+
+        bottomNavigation.currentItem = 0
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

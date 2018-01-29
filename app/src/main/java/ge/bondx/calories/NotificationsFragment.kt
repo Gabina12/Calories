@@ -41,7 +41,7 @@ class NotificationsFragment : Fragment() {
 
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
-        cnt = list.size
+        cnt = list.count { !it.isHeader && it.isChecked }
 
         adapter = MyMainItemRecyclerViewAdapter(list ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
@@ -49,10 +49,6 @@ class NotificationsFragment : Fragment() {
                     dbHandler.deleteProduct(item.key!!)
                     list.remove(item)
                     cnt--
-
-                    bottomNavigation.setNotification("+" + cnt.toString(),1)
-                    if(cnt == 0)
-                        bottomNavigation.setNotification("",1)
 
                     if(!list.any { it.category == item.category && !it.isHeader }){
                         val header = list.firstOrNull{it.category == item.category}
@@ -65,6 +61,9 @@ class NotificationsFragment : Fragment() {
 
                     adapter.notifyDataSetChanged()
                 }
+                bottomNavigation.setNotification("+" + cnt.toString(),1)
+                if(cnt == 0)
+                    bottomNavigation.setNotification("",1)
             }
         })
 

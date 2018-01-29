@@ -158,7 +158,7 @@ class MainItemFragment : Fragment() {
 
                 list!!.add(prod)
                 full_data.add(prod)
-                cnt = full_data.count { it.isChecked }
+                cnt = full_data.count { it.isChecked && !it.isHeader }
             } catch (ex: Throwable) {
                 Log.wtf("ERROR", ex)
             }
