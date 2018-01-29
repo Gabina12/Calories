@@ -1,45 +1,25 @@
 package ge.bondx.calories
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.support.v4.app.Fragment
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.View
-import android.widget.ArrayAdapter
-import android.widget.ListView
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.google.firebase.database.FirebaseDatabase
 import com.miguelcatalan.materialsearchview.MaterialSearchView
-import ge.bondx.calories.database.MyDBHandler
-import kotlinx.android.synthetic.main.activity_main.*
-import java.util.ArrayList
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import ge.bondx.calories.R.color.colorPrimary
+
 
 class MainActivity : AppCompatActivity() {
 
-    internal lateinit var searchView: MaterialSearchView
+    private lateinit var searchView: MaterialSearchView
 
-    private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
-        var selectedFragment: Fragment?
-        when (item.itemId) {
-            R.id.navigation_home -> {
-                selectedFragment = MainItemFragment.newInstance(1)
-                supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_dashboard -> {
-                return@OnNavigationItemSelectedListener true
-            }
-            R.id.navigation_notifications -> {
-                selectedFragment = NotificationsFragment.newInstance()
-                supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
-                return@OnNavigationItemSelectedListener true
-            }
-        }
-        false
-    }
-
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -53,8 +33,38 @@ class MainActivity : AppCompatActivity() {
 
         searchView = findViewById<View>(R.id.search_view) as MaterialSearchView
 
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        navigation.selectedItemId = R.id.navigation_home
+        val bottomNavigation = findViewById<View>(R.id.navigation) as AHBottomNavigation
+
+        val item1 = AHBottomNavigationItem(R.string.title_home, R.drawable.ic_dashboard_black_24dp, colorPrimary)
+        val item2 = AHBottomNavigationItem(R.string.title_notifications, R.drawable.ic_shopping_cart_black_24dp, colorPrimary)
+
+        bottomNavigation.addItem(item1)
+        bottomNavigation.addItem(item2)
+
+        bottomNavigation.defaultBackgroundColor = colorPrimary
+        bottomNavigation.isBehaviorTranslationEnabled = false
+        bottomNavigation.accentColor = Color.parseColor("#F63D2B")
+        bottomNavigation.inactiveColor = Color.parseColor("#747474")
+        bottomNavigation.isForceTint = true
+        bottomNavigation.isTranslucentNavigationEnabled = true
+        bottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
+        bottomNavigation.isColored = true
+        bottomNavigation.currentItem = 0
+
+        bottomNavigation.setOnTabSelectedListener({ position, _ ->
+            var selectedFragment: Fragment?
+            when (position) {
+                0 -> {
+                    selectedFragment = MainItemFragment.newInstance(1)
+                    supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
+                }
+                1 -> {
+                    selectedFragment = NotificationsFragment.newInstance()
+                    supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
+                }
+            }
+            true
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

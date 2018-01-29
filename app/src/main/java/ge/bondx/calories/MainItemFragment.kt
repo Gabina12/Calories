@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.util.Log
 import android.widget.EditText
 import android.widget.Toast
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.google.firebase.database.*
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
@@ -30,7 +31,9 @@ class MainItemFragment : Fragment() {
     private var full_data: MutableList<Product> = mutableListOf()
     private var adapter: MyMainItemRecyclerViewAdapter? = null
     private lateinit var recyclerView: RecyclerView
-    internal lateinit var searchView: MaterialSearchView
+    private lateinit var searchView: MaterialSearchView
+    private lateinit var bottomNavigation: AHBottomNavigation
+    private var cnt: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +46,7 @@ class MainItemFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
+        bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
         searchView = activity.findViewById<View>(R.id.search_view) as MaterialSearchView
         searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
@@ -81,11 +85,14 @@ class MainItemFragment : Fragment() {
             override fun onListFragmentInteraction(item: Product) {
                 val dbHandler = MyDBHandler(context)
                 if(item.isChecked) {
+                    cnt++
                     dbHandler.addProduct(item)
                 }
                 else {
+                    cnt--
                     dbHandler.deleteProduct(item.key!!)
                 }
+                bottomNavigation.setNotification("+" + cnt.toString(),1)
             }
         })
 
@@ -149,6 +156,7 @@ class MainItemFragment : Fragment() {
 
                 list!!.add(prod)
                 full_data.add(prod)
+                cnt = full_data.count { it.isChecked }
             } catch (ex: Throwable) {
                 Log.wtf("ERROR", ex)
             }
