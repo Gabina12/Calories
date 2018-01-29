@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import ge.bondx.calories.database.MyDBHandler
 
 import ge.bondx.calories.objects.Product
@@ -22,13 +23,11 @@ class NotificationsFragment : Fragment() {
     private lateinit var listView: RecyclerView
     private lateinit var adapter : MyMainItemRecyclerViewAdapter
     private lateinit var itemTotal: TextView
+    private lateinit var bottomNavigation: AHBottomNavigation
+    private var cnt: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            //mParam1 = arguments.getString(ARG_PARAM1)
-            //mParam2 = arguments.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
@@ -38,14 +37,22 @@ class NotificationsFragment : Fragment() {
         listView = view.findViewById<View>(R.id.notificationList) as RecyclerView
         itemTotal = view.findViewById<View>(R.id.txtTotal) as TextView
 
+        bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
+
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
+        cnt = list.size
 
         adapter = MyMainItemRecyclerViewAdapter(list ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
                 if(!item.isChecked) {
                     dbHandler.deleteProduct(item.key!!)
                     list.remove(item)
+                    cnt--
+
+                    bottomNavigation.setNotification("+" + cnt.toString(),1)
+                    if(cnt == 0)
+                        bottomNavigation.setNotification("",1)
 
                     if(!list.any { it.category == item.category && !it.isHeader }){
                         val header = list.firstOrNull{it.category == item.category}

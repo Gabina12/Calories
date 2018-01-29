@@ -93,6 +93,8 @@ class MainItemFragment : Fragment() {
                     dbHandler.deleteProduct(item.key!!)
                 }
                 bottomNavigation.setNotification("+" + cnt.toString(),1)
+                if(cnt == 0)
+                    bottomNavigation.setNotification("",1)
             }
         })
 
