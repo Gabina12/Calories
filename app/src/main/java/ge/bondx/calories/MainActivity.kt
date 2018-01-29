@@ -13,11 +13,16 @@ import com.google.firebase.database.FirebaseDatabase
 import com.miguelcatalan.materialsearchview.MaterialSearchView
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import ge.bondx.calories.R.color.colorPrimary
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter
+
+
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var searchView: MaterialSearchView
+    private var navigationAdapter: AHBottomNavigationAdapter? = null
+    private var tabColors: IntArray? = null
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,11 +40,15 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigation = findViewById<View>(R.id.navigation) as AHBottomNavigation
 
-        val item1 = AHBottomNavigationItem(R.string.title_home, R.drawable.ic_dashboard_black_24dp, colorPrimary)
-        val item2 = AHBottomNavigationItem(R.string.title_notifications, R.drawable.ic_shopping_cart_black_24dp, colorPrimary)
+        //val item1 = AHBottomNavigationItem(R.string.title_home, R.drawable.ic_dashboard_black_24dp, colorPrimary)
+        //val item2 = AHBottomNavigationItem(R.string.title_notifications, R.drawable.ic_shopping_cart_black_24dp, colorPrimary)
 
-        bottomNavigation.addItem(item1)
-        bottomNavigation.addItem(item2)
+        //bottomNavigation.addItem(item1)
+        //bottomNavigation.addItem(item2)
+
+        tabColors = applicationContext.resources.getIntArray(R.array.tab_colors)
+        navigationAdapter = AHBottomNavigationAdapter(this, R.menu.navigation)
+        navigationAdapter!!.setupWithBottomNavigation(bottomNavigation, tabColors)
 
         bottomNavigation.defaultBackgroundColor = colorPrimary
         bottomNavigation.isBehaviorTranslationEnabled = false
@@ -49,12 +58,13 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.isTranslucentNavigationEnabled = true
         bottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
         bottomNavigation.isColored = true
+        bottomNavigation.setNotificationBackgroundColor(R.color.colorBadge)
 
         bottomNavigation.setOnTabSelectedListener({ position, _ ->
             var selectedFragment: Fragment?
             when (position) {
                 0 -> {
-                    selectedFragment = MainItemFragment.newInstance(1)
+                    selectedFragment = MainItemFragment.newInstance()
                     supportFragmentManager.beginTransaction().replace(R.id.main_container, selectedFragment).commit()
                 }
                 1 -> {

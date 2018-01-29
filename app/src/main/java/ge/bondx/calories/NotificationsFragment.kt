@@ -1,5 +1,6 @@
 package ge.bondx.calories
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -26,18 +27,22 @@ class NotificationsFragment : Fragment() {
     private lateinit var bottomNavigation: AHBottomNavigation
     private var cnt: Int = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val view = inflater!!.inflate(R.layout.fragment_notifications, container, false)
+        initUi(view)
+        return view
+    }
+
+
+    @SuppressLint("ResourceAsColor")
+    private fun initUi(view: View){
+
         listView = view.findViewById<View>(R.id.notificationList) as RecyclerView
         itemTotal = view.findViewById<View>(R.id.txtTotal) as TextView
 
         bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
+        //bottomNavigation.setNotificationBackgroundColor(R.color.colorTransparent)
 
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
@@ -73,14 +78,6 @@ class NotificationsFragment : Fragment() {
         listView.adapter = adapter
 
         adapter.notifyDataSetChanged()
-
-        Toast.makeText(this.context,list.size.toString(),Toast.LENGTH_SHORT).show()
-
-        return view
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     fun onButtonPressed(uri: Uri) {

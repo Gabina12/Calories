@@ -1,5 +1,6 @@
 package ge.bondx.calories
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -25,7 +26,6 @@ import ge.bondx.calories.database.MyDBHandler
 
 class MainItemFragment : Fragment() {
 
-    private var mColumnCount = 1
     private var mListener: OnListFragmentInteractionListener? = null
     private var list: MutableList<Product> = mutableListOf()
     private var full_data: MutableList<Product> = mutableListOf()
@@ -37,16 +37,17 @@ class MainItemFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mColumnCount = arguments.getInt(ARG_COLUMN_COUNT)
-        }
     }
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
         bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
+
+        bottomNavigation.setNotificationBackgroundColor(R.color.colorBadge)
+
         searchView = activity.findViewById<View>(R.id.search_view) as MaterialSearchView
         searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {
             override fun onSearchViewShown() {
@@ -105,6 +106,8 @@ class MainItemFragment : Fragment() {
 
     private fun filter(text: String) : MutableList<Product> {
         val filteredProduct = ArrayList<Product>()
+
+        list = full_data
 
         if(text.isNullOrBlank()) return list
 
@@ -183,10 +186,9 @@ class MainItemFragment : Fragment() {
 
         private val ARG_COLUMN_COUNT = "column-count"
 
-        fun newInstance(columnCount: Int): MainItemFragment {
+        fun newInstance(): MainItemFragment {
             val fragment = MainItemFragment()
             val args = Bundle()
-            args.putInt(ARG_COLUMN_COUNT, columnCount)
             fragment.arguments = args
             return fragment
         }
