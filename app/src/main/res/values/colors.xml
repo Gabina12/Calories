@@ -3,11 +3,12 @@
     <color name="colorPrimary">#009688</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorAccent">#3F51B5</color>
-    <color name="colorTransparent">#e33542</color>
+    <color name="colorTransparent">@android:color/transparent</color>
     <color name="colorBadge">#e33542</color>
-<!-- @android:color/transparent -->
     <array name="tab_colors">
         <item name="tab_1">#009688</item>
         <item name="tab_2">#4CAF50</item>
     </array>
+
+
 </resources>

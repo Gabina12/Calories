@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     private var navigationAdapter: AHBottomNavigationAdapter? = null
     private var tabColors: IntArray? = null
 
-    @SuppressLint("ResourceAsColor")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() {
         navigationAdapter = AHBottomNavigationAdapter(this, R.menu.navigation)
         navigationAdapter!!.setupWithBottomNavigation(bottomNavigation, tabColors)
 
-        bottomNavigation.defaultBackgroundColor = colorPrimary
+        bottomNavigation.defaultBackgroundColor = resources.getColor(R.color.colorPrimary)
         bottomNavigation.isBehaviorTranslationEnabled = false
         bottomNavigation.accentColor = Color.parseColor("#F63D2B")
         bottomNavigation.inactiveColor = Color.parseColor("#747474")
@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         bottomNavigation.isTranslucentNavigationEnabled = true
         bottomNavigation.titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
         bottomNavigation.isColored = true
-        bottomNavigation.setNotificationBackgroundColor(R.color.colorBadge)
+        bottomNavigation.setNotificationBackgroundColor(resources.getColor(R.color.colorBadge))
 
         bottomNavigation.setOnTabSelectedListener({ position, _ ->
             var selectedFragment: Fragment?

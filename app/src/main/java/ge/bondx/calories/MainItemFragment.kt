@@ -39,14 +39,13 @@ class MainItemFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-    @SuppressLint("ResourceAsColor")
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val view = inflater!!.inflate(R.layout.fragment_mainitem_list, container, false)
 
         bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
 
-        bottomNavigation.setNotificationBackgroundColor(R.color.colorBadge)
+        bottomNavigation.setNotificationBackgroundColor(resources.getColor(R.color.colorBadge))
 
         searchView = activity.findViewById<View>(R.id.search_view) as MaterialSearchView
         searchView.setOnSearchViewListener(object : MaterialSearchView.SearchViewListener {

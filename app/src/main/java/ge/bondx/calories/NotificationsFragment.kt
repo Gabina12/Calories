@@ -35,14 +35,12 @@ class NotificationsFragment : Fragment() {
     }
 
 
-    @SuppressLint("ResourceAsColor")
     private fun initUi(view: View){
 
         listView = view.findViewById<View>(R.id.notificationList) as RecyclerView
         itemTotal = view.findViewById<View>(R.id.txtTotal) as TextView
 
         bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
-        //bottomNavigation.setNotificationBackgroundColor(R.color.colorTransparent)
 
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
