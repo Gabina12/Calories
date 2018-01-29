@@ -41,6 +41,7 @@ class NotificationsFragment : Fragment() {
         itemTotal = view.findViewById<View>(R.id.txtTotal) as TextView
 
         bottomNavigation = activity.findViewById<View>(R.id.navigation) as AHBottomNavigation
+        bottomNavigation.setNotification("",1)
 
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
@@ -64,9 +65,6 @@ class NotificationsFragment : Fragment() {
 
                     adapter.notifyDataSetChanged()
                 }
-                bottomNavigation.setNotification("+" + cnt.toString(),1)
-                if(cnt == 0)
-                    bottomNavigation.setNotification("",1)
             }
         })
 
