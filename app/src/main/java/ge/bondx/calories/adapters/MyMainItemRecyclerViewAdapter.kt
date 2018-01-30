@@ -113,15 +113,9 @@ class MyMainItemRecyclerViewAdapter(private var mValues: MutableList<Product>,
     }
 
     class ViewHolderItem(val mView: View) : RecyclerView.ViewHolder(mView) {
-        var txtContent: TextView
-        var txtCalory: TextView
-        var mCheckBox: CheckBox
-
-        init {
-            txtContent = mView.findViewById<View>(R.id.txtContent) as TextView
-            txtCalory = mView.findViewById<View>(R.id.txtCalory) as TextView
-            mCheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
-        }
+        var txtContent: TextView = mView.findViewById<View>(R.id.txtContent) as TextView
+        var txtCalory: TextView = mView.findViewById<View>(R.id.txtCalory) as TextView
+        var mCheckBox: CheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
 
         fun bind(item: Product, ctx: Context, listener: OnListFragmentInteractionListener) {
             txtCalory.text = "${ctx.resources.getText(R.string.calorie_text)} ${item.calory.toString()} " + if(item.Count!! > 100) " / " +
