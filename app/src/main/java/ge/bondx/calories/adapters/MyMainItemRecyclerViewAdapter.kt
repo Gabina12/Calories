@@ -1,16 +1,19 @@
-package ge.bondx.calories
+package ge.bondx.calories.adapters
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
+import ge.bondx.calories.R
 
 import ge.bondx.calories.objects.Product
 
 class MyMainItemRecyclerViewAdapter(private var mValues: MutableList<Product>,
-                                    private val mListener: OnListFragmentInteractionListener?)
+                                    private val mListener: OnListFragmentInteractionListener?,
+                                    var ctx: Context)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     interface OnListFragmentInteractionListener {
@@ -41,13 +44,8 @@ class MyMainItemRecyclerViewAdapter(private var mValues: MutableList<Product>,
             header.mSeparator.text = mValues[position].name
         } else{
             val item: ViewHolderItem = holder as ViewHolderItem
-            item.bind(mValues[position], mListener!!)
+            item.bind(mValues[position], ctx, mListener!!)
         }
-    }
-
-    fun filterList(filterdNames: ArrayList<Product>) {
-        this.mValues = filterdNames
-        notifyDataSetChanged()
     }
 
     override fun getItemCount(): Int {
@@ -125,16 +123,17 @@ class MyMainItemRecyclerViewAdapter(private var mValues: MutableList<Product>,
             mCheckBox = mView.findViewById<View>(R.id.checkBox) as CheckBox
         }
 
-        fun bind(item: Product, listener: OnListFragmentInteractionListener) {
-            txtCalory!!.text = "კალორია 100 გრამზე - ${item.calory.toString()}"
-            txtContent!!.text = item.name
+        fun bind(item: Product, ctx: Context, listener: OnListFragmentInteractionListener) {
+            txtCalory.text = "${ctx.resources.getText(R.string.calorie_text)} ${item.calory.toString()} " + if(item.Count!! > 100) " / " +
+                    "${ctx.resources.getText(R.string.sum)}${(item.Count!! * item.calory!!.toDouble())/ 100} ${ctx.resources.getText(R.string.calorie_unit)}" else " "
+            txtContent.text = item.name
 
             mCheckBox.tag = item.key
             mCheckBox.isChecked = item.isChecked
 
             mView.setOnClickListener {
-                item!!.isChecked = !mCheckBox!!.isChecked
-                mCheckBox.isChecked = item!!.isChecked
+                item.isChecked = !mCheckBox.isChecked
+                mCheckBox.isChecked = item.isChecked
                 listener.onListFragmentInteraction(item)
             }
         }

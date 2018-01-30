@@ -8,4 +8,8 @@
     <string name="Cancel">გაუქმება</string>
     <string name="dialog_title">ინფორმაცია</string>
     <string name="dialog_message">შეიყვანეთ პროდუქტის წინა გრამებში</string>
+
+    <string name="calorie_text">კალორია 100 გრამზე - </string>
+    <string name="calorie_unit">კკ</string>
+    <string name="sum">სულ: </string>
 </resources>

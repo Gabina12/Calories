@@ -1,6 +1,5 @@
 package ge.bondx.calories
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -10,8 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+import ge.bondx.calories.adapters.MyMainItemRecyclerViewAdapter
 import ge.bondx.calories.database.MyDBHandler
 
 import ge.bondx.calories.objects.Product
@@ -48,26 +47,26 @@ class NotificationsFragment : Fragment() {
         cnt = list.count { !it.isHeader && it.isChecked }
         val defaultValue = 100.0
 
-        adapter = MyMainItemRecyclerViewAdapter(list ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+        adapter = MyMainItemRecyclerViewAdapter(list, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
-                if(!item.isChecked) {
+                if (!item.isChecked) {
                     dbHandler.deleteProduct(item.key!!)
                     list.remove(item)
                     cnt--
 
-                    if(!list.any { it.category == item.category && !it.isHeader }){
-                        val header = list.firstOrNull{it.category == item.category}
-                        if(header != null)
+                    if (!list.any { it.category == item.category && !it.isHeader }) {
+                        val header = list.firstOrNull { it.category == item.category }
+                        if (header != null)
                             list.remove(header)
                     }
 
-                    var total:Double = list.sumByDouble { ((it.calory!!.toDouble() * it.Count!!).div(defaultValue)) }
+                    var total: Double = list.sumByDouble { ((it.calory!!.toDouble() * it.Count!!).div(defaultValue)) }
                     itemTotal.text = total.toString()
 
                     adapter.notifyDataSetChanged()
                 }
             }
-        })
+        },context)
 
 
 

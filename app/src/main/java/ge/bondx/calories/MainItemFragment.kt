@@ -1,15 +1,11 @@
 package ge.bondx.calories
 
-import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,22 +13,16 @@ import android.view.ViewGroup
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.Toast
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.google.firebase.database.*
 import com.miguelcatalan.materialsearchview.MaterialSearchView
-import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
+import ge.bondx.calories.adapters.MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener
 import ge.bondx.calories.objects.Product
-import ge.bondx.calories.database.DatabaseUtil
 import ge.bondx.calories.database.MyDBHandler
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
 import android.text.InputType
-
-
-
-
+import ge.bondx.calories.adapters.MyMainItemRecyclerViewAdapter
 
 
 class MainItemFragment : Fragment() {
@@ -45,10 +35,6 @@ class MainItemFragment : Fragment() {
     private lateinit var searchView: MaterialSearchView
     private lateinit var bottomNavigation: AHBottomNavigation
     private var cnt: Int = 0
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -92,10 +78,10 @@ class MainItemFragment : Fragment() {
         recyclerView = view.findViewById<View>(R.id.list) as RecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        adapter = MyMainItemRecyclerViewAdapter(list!!, object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
+        adapter = MyMainItemRecyclerViewAdapter(list!!, object : OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
                 val dbHandler = MyDBHandler(context)
-                if(item.isChecked) {
+                if (item.isChecked) {
 
                     val alertDialogBuilder = AlertDialog.Builder(
                             context)
@@ -110,7 +96,7 @@ class MainItemFragment : Fragment() {
                     input.selectAll()
 
                     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
+                    imm.showSoftInput(input, SHOW_IMPLICIT)
 
                     val lp = LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -119,28 +105,27 @@ class MainItemFragment : Fragment() {
                     alertDialogBuilder.setView(input)
 
                     alertDialogBuilder.setCancelable(true)
-                            .setPositiveButton(resources.getText(R.string.Ok), {
-                                    _, _ ->  item.Count = input.text.toString().toDouble()
+                            .setPositiveButton(resources.getText(R.string.Ok), { _, _ ->
+                                item.Count = input.text.toString().toDouble()
                                 cnt++
                                 setNotification(cnt)
                                 dbHandler.addProduct(item)
                             }
-                            ).setNegativeButton(resources.getText(R.string.Cancel),{
-                                _, _ -> item.isChecked = false
-                                setNotification(cnt)
-                                adapter!!.notifyDataSetChanged()
-                            })
+                            ).setNegativeButton(resources.getText(R.string.Cancel), { _, _ ->
+                        item.isChecked = false
+                        setNotification(cnt)
+                        adapter!!.notifyDataSetChanged()
+                    })
 
                     val alertDialog = alertDialogBuilder.create()
                     alertDialog.show()
-                }
-                else {
+                } else {
                     cnt--
                     setNotification(cnt)
                     dbHandler.deleteProduct(item.key!!)
                 }
             }
-        })
+        }, context)
 
         recyclerView.adapter = adapter
 
