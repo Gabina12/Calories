@@ -126,7 +126,7 @@ class MyMainItemRecyclerViewAdapter(private var mValues: MutableList<Product>,
         }
 
         fun bind(item: Product, listener: OnListFragmentInteractionListener) {
-            txtCalory!!.text = "კალორია - " + item.calory.toString()
+            txtCalory!!.text = "კალორია 100 გრამზე - ${item.calory.toString()}"
             txtContent!!.text = item.name
 
             mCheckBox.tag = item.key

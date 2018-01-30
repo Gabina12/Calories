@@ -2,8 +2,10 @@ package ge.bondx.calories
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
@@ -13,6 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
@@ -22,6 +25,14 @@ import ge.bondx.calories.MyMainItemRecyclerViewAdapter.OnListFragmentInteraction
 import ge.bondx.calories.objects.Product
 import ge.bondx.calories.database.DatabaseUtil
 import ge.bondx.calories.database.MyDBHandler
+import android.widget.LinearLayout
+import android.widget.TextView
+import android.view.inputmethod.InputMethodManager.SHOW_IMPLICIT
+import android.text.InputType
+
+
+
+
 
 
 class MainItemFragment : Fragment() {
@@ -85,22 +96,61 @@ class MainItemFragment : Fragment() {
             override fun onListFragmentInteraction(item: Product) {
                 val dbHandler = MyDBHandler(context)
                 if(item.isChecked) {
-                    cnt++
-                    dbHandler.addProduct(item)
+
+                    val alertDialogBuilder = AlertDialog.Builder(
+                            context)
+
+                    alertDialogBuilder.setTitle(resources.getText(R.string.dialog_title))
+                    alertDialogBuilder.setMessage(resources.getText(R.string.dialog_message))
+
+                    val input = EditText(context)
+                    input.inputType = (InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_SIGNED)
+                    input.setText("100")
+                    input.requestFocus()
+                    input.selectAll()
+
+                    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(input, InputMethodManager.SHOW_IMPLICIT)
+
+                    val lp = LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT)
+                    input.layoutParams = lp
+                    alertDialogBuilder.setView(input)
+
+                    alertDialogBuilder.setCancelable(true)
+                            .setPositiveButton(resources.getText(R.string.Ok), {
+                                    _, _ ->  item.Count = input.text.toString().toDouble()
+                                cnt++
+                                setNotification(cnt)
+                                dbHandler.addProduct(item)
+                            }
+                            ).setNegativeButton(resources.getText(R.string.Cancel),{
+                                _, _ -> item.isChecked = false
+                                setNotification(cnt)
+                                adapter!!.notifyDataSetChanged()
+                            })
+
+                    val alertDialog = alertDialogBuilder.create()
+                    alertDialog.show()
                 }
                 else {
                     cnt--
+                    setNotification(cnt)
                     dbHandler.deleteProduct(item.key!!)
                 }
-                bottomNavigation.setNotification("+" + cnt.toString(),1)
-                if(cnt == 0)
-                    bottomNavigation.setNotification("",1)
             }
         })
 
         recyclerView.adapter = adapter
 
         return view
+    }
+
+    fun setNotification(cnt: Int){
+        bottomNavigation.setNotification("+" + cnt.toString(),1)
+        if(cnt == 0)
+            bottomNavigation.setNotification("",1)
     }
 
     private fun filter(text: String) : MutableList<Product> {

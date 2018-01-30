@@ -15,5 +15,6 @@ class Product {
     var isHeader: Boolean = false
     var isChecked: Boolean = false
     var key: String? = null
+    var Count: Double? = 100.0
 
 }

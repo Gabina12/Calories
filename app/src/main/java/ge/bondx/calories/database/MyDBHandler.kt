@@ -11,7 +11,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
 
     companion object {
 
-        private const val DATABASE_VERSION = 1
+        private const val DATABASE_VERSION = 3
         private const val DATABASE_NAME = "productDB.db"
         const val TABLE_PRODUCTS = "products"
 
@@ -20,6 +20,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         const val COLUMN_NAME = "name"
         const val COLUMN_CALORY = "calory"
         const val COLUMN_CATEGORY = "category"
+        const val COLUMN_COUNT = "count"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
@@ -29,7 +30,9 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
                 COLUMN_NAME + " TEXT," +
                 COLUMN_CATEGORY + " TEXT," +
                 COLUMN_KEY + " TEXT,"
-                + COLUMN_CALORY + " INTEGER" + ")")
+                + COLUMN_CALORY + " INTEGER, " +
+                COLUMN_COUNT + "  DECIMAL(18,2) "
+                +")")
         db.execSQL(PRODUCTS_TABLE)
     }
 
@@ -45,6 +48,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         values.put(COLUMN_CATEGORY, product.category)
         values.put(COLUMN_CALORY, product.calory!!.toDouble())
         values.put(COLUMN_KEY, product.key)
+        values.put(COLUMN_COUNT, product.Count)
 
         val db = this.writableDatabase
 
@@ -65,17 +69,12 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
         if (cursor.moveToFirst()) {
             cursor.moveToFirst()
 
-            //val id = Integer.parseInt(cursor.getString(0))
-            val name = cursor.getString(1)
-            val category = cursor.getString(2)
-            val product_key = cursor.getString(3)
-            val calory = cursor.getDouble(4)
-
             product = Product.create()
-            product.key = product_key
-            product.name = name
-            product.category = category
-            product.calory = calory
+            product.key = cursor.getString(3)
+            product.name = cursor.getString(1)
+            product.category = cursor.getString(2)
+            product.calory = cursor.getDouble(4)
+            product.Count = cursor.getDouble(5)
 
             cursor.close()
         }
@@ -100,18 +99,13 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
 
         while (cursor.moveToNext()){
 
-            //val id = Integer.parseInt(cursor.getString(0))
-            val name = cursor.getString(1)
-            val category = cursor.getString(2)
-            val key = cursor.getString(3)
-            val calory = cursor.getDouble(4)
-
             val product = Product.create()
-            product.key = key
-            product.name = name
-            product.category = category
-            product.calory = calory
+            product.key = cursor.getString(3)
+            product.name = cursor.getString(1)
+            product.category = cursor.getString(2)
+            product.calory = cursor.getDouble(4)
             product.isChecked = true
+            product.Count = cursor.getDouble(5)
 
 
             if(prevCategory!!.trim() != product.category!!.trim()){
@@ -121,6 +115,7 @@ class MyDBHandler(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, n
                 pheader.category = prevCategory
                 pheader.isHeader = true
                 pheader.calory = 0
+                pheader.Count = 0.0
                 products.add(pheader)
             }
 

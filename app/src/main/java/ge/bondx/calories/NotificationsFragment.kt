@@ -46,6 +46,7 @@ class NotificationsFragment : Fragment() {
         val dbHandler = MyDBHandler(context)
         list = dbHandler.getProducts() as MutableList<Product>
         cnt = list.count { !it.isHeader && it.isChecked }
+        val defaultValue = 100.0
 
         adapter = MyMainItemRecyclerViewAdapter(list ,object : MyMainItemRecyclerViewAdapter.OnListFragmentInteractionListener {
             override fun onListFragmentInteraction(item: Product) {
@@ -60,7 +61,7 @@ class NotificationsFragment : Fragment() {
                             list.remove(header)
                     }
 
-                    var total:Double = list.sumByDouble { it.calory!!.toDouble() }
+                    var total:Double = list.sumByDouble { ((it.calory!!.toDouble() * it.Count!!).div(defaultValue)) }
                     itemTotal.text = total.toString()
 
                     adapter.notifyDataSetChanged()
@@ -68,7 +69,9 @@ class NotificationsFragment : Fragment() {
             }
         })
 
-        var total:Double = list.sumByDouble { it.calory!!.toDouble() }
+
+
+        var total:Double = list.sumByDouble { ((it.calory!!.toDouble() * it.Count!!).div(defaultValue)) }
         itemTotal.text = total.toString()
 
         listView.adapter = adapter
